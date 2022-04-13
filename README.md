@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Ensure that [Node](https://nodejs.org/en/) (and optionally [Deno](https://deno.land/)) is installed.
+1. Ensure that [Node](https://nodejs.org/en/) is installed.
 2. Run `npm install` to install Node dependencies.
 
 ## Launch
