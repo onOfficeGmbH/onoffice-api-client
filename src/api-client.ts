@@ -5,7 +5,7 @@ export async function callApi(token: string, secret: string, call: string): Prom
 
     // We need to sort the data for the HMAC.
     query.parameters.data.sort()
-    const rawData = JSON.stringify(query.parameters.data)
+    const rawData = JSON.stringify(query.parameters)
 
     // Escape special chars. Otherwise Umlaute, like in "Nürnberg", will not get recognized correctly in enterprise.
     const toEscape = /[\u00C0-\u00FF]/g // Latin-1 Supplement, see https://en.wikipedia.org/wiki/List_of_Unicode_characters#Latin-1_Supplement
@@ -17,7 +17,6 @@ export async function callApi(token: string, secret: string, call: string): Prom
     const hmac = md5(secret + md5(hmacparameters))
       
     const request = `{"token":"${token}","request":{"actions":[{"actionid":"${query.actionid}","resourceid":"${query.resourceid}","resourcetype":"${query.resourcetype}","identifier":"${query.identifier}","timestamp":${timestamp},"hmac":"${hmac}","parameters":${escapedData}}]}}`
-    console.log(request)
     
     return fetch('http://localhost:8080', {
       method: "POST",
@@ -28,5 +27,4 @@ export async function callApi(token: string, secret: string, call: string): Prom
     }).then(async (response) => 
       response.json()
     )
-    .catch(() => null)
 }
