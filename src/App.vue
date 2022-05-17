@@ -5,6 +5,7 @@ import QueryInput from "./components/QueryInput.vue";
 <template>
   <main>
     <h1>onOffice API</h1>
+    <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">API Documentation (opens in new tab)</a>
     <QueryInput />
   </main>
 </template>
@@ -13,5 +14,9 @@ import QueryInput from "./components/QueryInput.vue";
 main {
   max-width: 48rem;
   margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
 }
 </style>
