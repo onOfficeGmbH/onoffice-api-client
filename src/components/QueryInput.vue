@@ -88,7 +88,7 @@ async function sendQuery() {
                 </label>
             </div>
             <textarea rows="20" v-model="query" name="query"></textarea>
-            <input type="submit" :value="`Send (#${history.size() + 1})`">
+            <input type="submit" :value="`Send #${history.size() + 1}`">
         </form>
         <div class="history">
             <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
