@@ -12,12 +12,14 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "json-stable-stringify": "^1.0.1",
     "md5": "^2.3.0",
     "vue": "^3.2.31"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
     "@types/jsdom": "^16.2.14",
+    "@types/json-stable-stringify": "^1.0.34",
     "@types/md5": "^2.3.2",
     "@types/node": "^16.11.25",
     "@vitejs/plugin-vue": "^2.2.2",

@@ -1,4 +1,5 @@
 import md5 from "md5";
+import stableStringify from "json-stable-stringify";
 
 export async function callApi(
   token: string,
@@ -7,12 +8,8 @@ export async function callApi(
 ): Promise<object | null> {
   const query = JSON.parse(call);
 
-  if (Array.isArray(query.parameters.data)) {
-    // We need to sort the data for the HMAC.
-    query.parameters.data.sort();
-  }
-
-  const rawData = JSON.stringify(query.parameters);
+  // We need to sort the data for the HMAC.
+  const rawData = stableStringify(query.parameters);
 
   // Escape special chars. Otherwise Umlaute, like in "Nürnberg", will not get recognized correctly in enterprise.
   const toEscape = /[\u00C0-\u00FF]/g; // Latin-1 Supplement, see https://en.wikipedia.org/wiki/List_of_Unicode_characters#Latin-1_Supplement
