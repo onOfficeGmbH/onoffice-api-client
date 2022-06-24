@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { callApi } from '@/api-client';
 import { History } from '@/history';
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 
 const token = ref("")
 const secret = ref("")
@@ -38,7 +38,8 @@ function nextInHistoryClicked() {
     }
 }
 
-const defaultQuery = `\
+const examples = reactive(new Map())
+examples.set("Read Estates", `\
 {
     "actionid": "urn:onoffice-de-ns:smart:2.5:smartml:action:read",
     "resourceid": "",
@@ -54,8 +55,49 @@ const defaultQuery = `\
         "listoffset": 0,
         "sortby": {"kaufpreis": "ASC", "warmmiete": "ASC"}
     }
-}`
-const query = ref(defaultQuery)
+}`)
+examples.set("Create Estate", `\
+{ 
+    "actionid":"urn:onoffice-de-ns:smart:2.5:smartml:action:create",
+    "resourceid":"",
+    "identifier":"",
+    "resourcetype":"estate",
+    "parameters":{ 
+        "data":{ 
+            "objektart":"haus",
+            "nutzungsart":"wohnen",
+            "vermarktungsart":"kauf",
+            "objekttyp":"einfamilienhaus",
+            "plz":52068,
+            "ort":"Aachen",
+            "land":"DEU",
+            "regionaler_zusatz":["openGeoDb_Region_122117"],
+            "nebenkosten":100,
+            "heizkosten":80,
+            "mietpreis_pro_qm":12,
+            "wohnflaeche":75,
+            "anzahl_zimmer":3,
+            "anzahl_schlafzimmer":1,
+            "anzahl_badezimmer":1,
+            "breitengrad":"50.7762106",
+            "laengengrad":"6.0857545",
+            "heizungsart":["zentral","fussboden"],
+            "stellplatzart":["freiplatz","carport"],
+            "kaufpreis":200000
+        }
+    }
+}
+`)
+
+const currentExample = ref<string | null>("Read Estates")
+const currentExampleLabel = computed(() => {
+    if (currentExample.value === null) {
+        return "Custom"
+    } else {
+        return currentExample.value
+    }
+})
+const query = ref(examples.get(currentExample.value))
 
 const response = ref("")
 
@@ -70,6 +112,16 @@ async function sendQuery() {
         query: query.value,
         response: response.value
     })
+}
+
+function queryModified() {
+    currentExample.value = null
+}
+
+function exampleChanged() {
+    if (currentExample.value !== null) {
+        query.value = examples.get(currentExample.value)
+    }
 }
 </script>
 
@@ -87,7 +139,11 @@ async function sendQuery() {
                     <input type="password" v-model="secret" name="password" autocomplete="password" />
                 </label>
             </div>
-            <textarea rows="20" v-model="query" name="query"></textarea>
+            <select v-model="currentExample" @change="exampleChanged">
+                <option v-if="currentExample === null" selected :value="null">Custom</option>
+                <option v-for="[key, _] in examples" :value="key" :selected="currentExample === key">{{ key }}</option>
+            </select>
+            <textarea rows="20" v-model="query" name="query" @input="queryModified"></textarea>
             <input type="submit" :value="`Send #${history.size() + 1}`">
         </form>
         <div class="history">
