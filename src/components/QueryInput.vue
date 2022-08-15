@@ -2,9 +2,13 @@
 import { callApi } from '@/api-client';
 import { History } from '@/history';
 import { ref, reactive, computed, watch } from 'vue';
+import {Codemirror} from "vue-codemirror";
+import {json} from "@codemirror/lang-json";
 
 const token = ref("")
 const secret = ref("")
+
+const extensions = [json()];
 
 const history = reactive(new History());
 const previousLabel = computed(() => {
@@ -143,7 +147,8 @@ function exampleChanged() {
                 <option v-if="currentExample === null" selected :value="null">Custom</option>
                 <option v-for="[key, _] in examples" :value="key" :selected="currentExample === key">{{ key }}</option>
             </select>
-            <textarea rows="20" v-model="query" name="query" @input="queryModified"></textarea>
+            <codemirror v-model="query" :extensions="extensions" @input="queryModified"/>
+            <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="`Send #${history.size() + 1}`">
         </form>
         <div class="history">
@@ -183,7 +188,7 @@ label {
     flex-direction: column;
 }
 
-textarea {
+.cm-editor {
     width: 100%;
 }
 
