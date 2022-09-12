@@ -27,7 +27,7 @@ export async function callApi(
   const request =
     `{"token":"${token}","request":{"actions":[{"actionid":"${query.actionid}","resourceid":"${query.resourceid}","resourcetype":"${query.resourcetype}","identifier":"${query.identifier}","timestamp":${timestamp},"hmac":"${hmac}","parameters":${escapedData}}]}}`;
 
-  return fetch("http://localhost:8080", {
+  return fetch(import.meta.env.VITE_API_SERVER_URL!! as string, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
