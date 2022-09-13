@@ -5,10 +5,10 @@ const port = 8000;
 const handler = async (request: Request): Promise<Response> => {
   console.log(request.method)
   console.log(request.headers)
-  console.log(await request.json());
+  console.log(await request.text());  
 
   return new Response("Logged", { status: 200 });
 };
 
-console.log(`HTTP webserver running. Access it at: http://localhost:8080/`);
+console.log(`HTTP webserver running. Access it at: http://localhost:${port}/`);
 await serve(handler, { port });
