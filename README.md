@@ -1,4 +1,5 @@
 # onOffice API Client
+The API client is publicy available at https://tools.onofficeweb.com/api-client/.
 
 ## Setup
 
