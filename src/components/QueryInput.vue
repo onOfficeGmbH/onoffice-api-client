@@ -130,7 +130,8 @@ async function sendQuery() {
     })
 }
 
-function queryModified() {
+function queryModified(newQuery: string) {
+    query.value = newQuery
     currentExample.value = null
 }
 
@@ -159,7 +160,7 @@ function exampleChanged() {
                 <option v-if="currentExample === null" selected :value="null">Custom</option>
                 <option v-for="[key, _] in examples" :value="key" :selected="currentExample === key">{{ key }}</option>
             </select>
-            <codemirror v-model="query" :extensions="extensions" @input="queryModified"/>
+            <codemirror :extensions="extensions" :modelValue="query" @update:modelValue="queryModified"/>
             <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
