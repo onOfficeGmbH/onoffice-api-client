@@ -102,15 +102,27 @@ const currentExampleLabel = computed(() => {
     }
 })
 const query = ref(examples.get(currentExample.value))
+const sending = ref(false)
+const submitMsg = computed(() => {
+    if (!sending.value) {
+     return `Send #${history.size() + 1}`
+    } else {
+     return `Sending #${history.size() + 1}…`
+    }})
 
 const response = ref("")
 
 async function sendQuery() {
-    response.value = await callApi(
-        token.value,
-        secret.value,
-        query.value
-    ).then(response => JSON.stringify(response, undefined, 2))
+    try {
+        sending.value  = true
+        response.value = await callApi(
+            token.value,
+            secret.value,
+            query.value
+        ).then(response => JSON.stringify(response, undefined, 2))
+    } finally {
+        sending.value = false
+    }
 
     history.addNewEntry({
         query: query.value,
@@ -149,7 +161,7 @@ function exampleChanged() {
             </select>
             <codemirror v-model="query" :extensions="extensions" @input="queryModified"/>
             <input type="hidden" :value="query" name="query" />
-            <input type="submit" :value="`Send #${history.size() + 1}`">
+            <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
         <div class="history">
             <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
