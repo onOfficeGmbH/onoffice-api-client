@@ -4,8 +4,8 @@
   "scripts": {
     "start": "concurrently \"npm:dev\" \"npm:proxy-server\"",
     "dev": "vite",
-    "proxy-server": "deno run --allow-net ./proxyServer.ts",
-    "build": "vue-tsc --noEmit && VITE_API_SERVER_URL=example.org vite build --base=/api-client/",
+    "proxy-server": "deno run --allow-net ./proxies/proxyServer.ts",
+    "build": "vue-tsc --noEmit && VITE_API_SERVER_URL=/api-client/proxy vite build --base=/api-client/",
     "preview": "vite preview --port 5050",
     "test:unit": "vitest --environment jsdom",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
