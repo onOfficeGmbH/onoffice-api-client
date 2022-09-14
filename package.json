@@ -14,8 +14,6 @@
   "dependencies": {
     "@codemirror/lang-json": "^6.0.0",
     "codemirror": "^6.0.1",
-    "json-stable-stringify": "^1.0.1",
-    "md5": "^2.3.0",
     "vue": "^3.2.31",
     "vue-codemirror": "^6.0.2"
   },
