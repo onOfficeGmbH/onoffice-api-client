@@ -114,6 +114,11 @@ const submitMsg = computed(() => {
 
 const response = ref("")
 
+const codemirrorStyle = {
+    width: "100%",
+    "max-width": "100%",
+}
+
 async function sendQuery() {
     try {
         sending.value = true
@@ -163,7 +168,8 @@ function exampleChanged() {
                 <option v-if="currentExample === null" selected :value="null">Custom</option>
                 <option v-for="[key, _] in examples" :value="key" :selected="currentExample === key">{{ key }}</option>
             </select>
-            <codemirror :extensions="extensions" :modelValue="query" @update:modelValue="queryModified" />
+            <codemirror class="cm-editor" :style="codemirrorStyle" :extensions="extensions" :modelValue="query"
+                @update:modelValue="queryModified" />
             <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
@@ -174,9 +180,9 @@ function exampleChanged() {
         </div>
         <details>
             <summary>See query #{{history.getCurrentNumber()}}</summary>
-            <textarea class="output" readonly :rows="historyQuery.split('\n').length">{{historyQuery}}</textarea>
+            <codemirror class="output" :style="codemirrorStyle" :extensions="extensions" :modelValue="historyQuery" readonly />
         </details>
-        <textarea class="output" readonly :rows="response.split('\n').length">{{response}}</textarea>
+        <codemirror class="output" :style="codemirrorStyle" :extensions="extensions" :modelValue="response" readonly />
     </div>
 </template>
 
@@ -206,10 +212,6 @@ label {
     flex-direction: column;
 }
 
-.cm-editor {
-    width: 100%;
-}
-
 .history {
     display: flex;
     flex-direction: column;
@@ -223,7 +225,7 @@ details {
     margin-bottom: 1rem;
 }
 
-textarea.output {
+.output {
     width: 100%;
     resize: none;
 }
