@@ -2,8 +2,8 @@
 import { callApi } from '@/api-client';
 import { History } from '@/history';
 import { ref, reactive, computed, watch } from 'vue';
-import {Codemirror} from "vue-codemirror";
-import {json} from "@codemirror/lang-json";
+import { Codemirror } from "vue-codemirror";
+import { json } from "@codemirror/lang-json";
 
 const token = ref("")
 const secret = ref("")
@@ -105,16 +105,27 @@ const query = ref(examples.get(currentExample.value))
 const sending = ref(false)
 const submitMsg = computed(() => {
     if (!sending.value) {
-     return `Send #${history.size() + 1}`
+        return `Send #${history.size() + 1}`
     } else {
-     return `Sending #${history.size() + 1}…`
-    }})
+        return `Sending #${history.size() + 1}…`
+    }
+})
 
 const response = ref("")
+const responseElement = ref<HTMLInputElement | null>(null)
+
+async function resizeResponseTextarea(newResponse: string) {
+    const element = responseElement.value!!
+    element.innerHTML = newResponse
+    element.style.height = "auto"
+    element.style.height = element.scrollHeight + "px"
+}
+
+watch(response, resizeResponseTextarea)
 
 async function sendQuery() {
     try {
-        sending.value  = true
+        sending.value = true
         response.value = await callApi(
             token.value,
             secret.value,
@@ -160,7 +171,7 @@ function exampleChanged() {
                 <option v-if="currentExample === null" selected :value="null">Custom</option>
                 <option v-for="[key, _] in examples" :value="key" :selected="currentExample === key">{{ key }}</option>
             </select>
-            <codemirror :extensions="extensions" :modelValue="query" @update:modelValue="queryModified"/>
+            <codemirror :extensions="extensions" :modelValue="query" @update:modelValue="queryModified" />
             <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
@@ -169,9 +180,7 @@ function exampleChanged() {
             <button :disabled="!history.canGoForward()" @click="nextInHistoryClicked">{{ nextLabel }}</button>
         </div>
         <h2>Response #{{history.getCurrentNumber()}}</h2>
-        <code>
-            <pre>{{ response }}</pre>
-        </code>
+        <textarea ref="responseElement" class="result" readonly>{{response}}</textarea>
     </div>
 </template>
 
@@ -213,7 +222,8 @@ label {
     gap: 0.5rem;
 }
 
-code {
+textarea.result {
     width: 100%;
+    resize: none;
 }
 </style>
