@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { callApi } from '@/api-client';
 import { History } from '@/history';
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { Codemirror } from "vue-codemirror";
 import { json } from "@codemirror/lang-json";
 
@@ -29,7 +29,7 @@ function previousInHistoryClicked() {
     history.goBack()
     const historyEntry = history.getCurrentEntry()
     if (historyEntry !== null) {
-        query.value = historyEntry.query
+        historyQuery.value = historyEntry.query
         response.value = historyEntry.response
     }
 }
@@ -37,7 +37,7 @@ function nextInHistoryClicked() {
     history.goForward()
     const historyEntry = history.getCurrentEntry()
     if (historyEntry !== null) {
-        query.value = historyEntry.query
+        historyQuery.value = historyEntry.query
         response.value = historyEntry.response
     }
 }
@@ -101,7 +101,8 @@ const currentExampleLabel = computed(() => {
         return currentExample.value
     }
 })
-const query = ref(examples.get(currentExample.value))
+const query = ref<string>(examples.get(currentExample.value))
+const historyQuery = ref("")
 const sending = ref(false)
 const submitMsg = computed(() => {
     if (!sending.value) {
@@ -112,16 +113,6 @@ const submitMsg = computed(() => {
 })
 
 const response = ref("")
-const responseElement = ref<HTMLInputElement | null>(null)
-
-async function resizeResponseTextarea(newResponse: string) {
-    const element = responseElement.value!!
-    element.innerHTML = newResponse
-    element.style.height = "auto"
-    element.style.height = element.scrollHeight + "px"
-}
-
-watch(response, resizeResponseTextarea)
 
 async function sendQuery() {
     try {
@@ -131,6 +122,7 @@ async function sendQuery() {
             secret.value,
             query.value
         ).then(response => JSON.stringify(response, undefined, 2))
+        historyQuery.value = query.value
     } finally {
         sending.value = false
     }
@@ -155,7 +147,7 @@ function exampleChanged() {
 
 <template>
     <div class="input">
-        <h2>Query #{{history.getCurrentNumber()}}</h2>
+        <h2>New query</h2>
         <form @submit.prevent="sendQuery">
             <div class="credentials">
                 <label>
@@ -175,12 +167,16 @@ function exampleChanged() {
             <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
+        <h2>Response #{{history.getCurrentNumber()}}</h2>
         <div class="history">
             <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
             <button :disabled="!history.canGoForward()" @click="nextInHistoryClicked">{{ nextLabel }}</button>
         </div>
-        <h2>Response #{{history.getCurrentNumber()}}</h2>
-        <textarea ref="responseElement" class="result" readonly>{{response}}</textarea>
+        <details>
+            <summary>See query #{{history.getCurrentNumber()}}</summary>
+            <textarea class="output" readonly :rows="historyQuery.split('\n').length">{{historyQuery}}</textarea>
+        </details>
+        <textarea class="output" readonly :rows="response.split('\n').length">{{response}}</textarea>
     </div>
 </template>
 
@@ -218,11 +214,16 @@ label {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 1rem 0;
+    margin-bottom: 1rem;
     gap: 0.5rem;
 }
 
-textarea.result {
+details {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+textarea.output {
     width: 100%;
     resize: none;
 }
