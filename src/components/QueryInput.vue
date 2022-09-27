@@ -109,6 +109,8 @@ const response = ref("")
 const codemirrorStyle = {
     width: "100%",
     "max-width": "100%",
+    "margin-top": "0.5rem",
+    "margin-bottom": "0.5rem",
 }
 
 async function sendQuery() {
