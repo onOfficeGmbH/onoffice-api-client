@@ -174,7 +174,7 @@ function exampleChanged() {
         </div>
         <template v-if="history.size() > 0">
             <h2>Response #{{history.getCurrentNumber()}}</h2>
-            <div class="history">
+            <div class="history" v-if="history.size() > 1">
                 <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
                 <button :disabled="!history.canGoForward()" @click="nextInHistoryClicked">{{ nextLabel }}</button>
             </div>
