@@ -29,7 +29,6 @@ function previousInHistoryClicked() {
     history.goBack()
     const historyEntry = history.getCurrentEntry()
     if (historyEntry !== null) {
-        historyQuery.value = historyEntry.query
         response.value = historyEntry.response
     }
 }
@@ -37,7 +36,6 @@ function nextInHistoryClicked() {
     history.goForward()
     const historyEntry = history.getCurrentEntry()
     if (historyEntry !== null) {
-        historyQuery.value = historyEntry.query
         response.value = historyEntry.response
     }
 }
@@ -94,16 +92,10 @@ examples.set("Create Estate", `\
 `)
 
 const currentExample = ref<string | null>("Read Estates")
-const currentExampleLabel = computed(() => {
-    if (currentExample.value === null) {
-        return "Custom"
-    } else {
-        return currentExample.value
-    }
-})
+
 const query = ref<string>(examples.get(currentExample.value))
-const historyQuery = ref("")
 const sending = ref(false)
+const error = ref<string | null>(null)
 const submitMsg = computed(() => {
     if (!sending.value) {
         return `Send #${history.size() + 1}`
@@ -121,21 +113,23 @@ const codemirrorStyle = {
 
 async function sendQuery() {
     try {
+        error.value = null
         sending.value = true
         response.value = await callApi(
             token.value,
             secret.value,
             query.value
         ).then(response => JSON.stringify(response, undefined, 2))
-        historyQuery.value = query.value
+
+        history.addNewEntry({
+            query: query.value,
+            response: response.value
+        })
+    } catch (e: any) {
+        error.value = `An error occurred while sending the query:\n${e.message}`
     } finally {
         sending.value = false
     }
-
-    history.addNewEntry({
-        query: query.value,
-        response: response.value
-    })
 }
 
 function queryModified(newQuery: string) {
@@ -157,11 +151,11 @@ function exampleChanged() {
             <div class="credentials">
                 <label>
                     Token
-                    <input type="text" v-model="token" name="username" autocomplete="username" />
+                    <input type="text" required v-model="token" name="username" autocomplete="username" />
                 </label>
                 <label>
                     Secret
-                    <input type="password" v-model="secret" name="password" autocomplete="password" />
+                    <input type="password" required v-model="secret" name="password" autocomplete="password" />
                 </label>
             </div>
             <select v-model="currentExample" @change="exampleChanged">
@@ -173,16 +167,23 @@ function exampleChanged() {
             <input type="hidden" :value="query" name="query" />
             <input type="submit" :value="submitMsg" :disabled="sending">
         </form>
-        <h2>Response #{{history.getCurrentNumber()}}</h2>
-        <div class="history">
-            <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
-            <button :disabled="!history.canGoForward()" @click="nextInHistoryClicked">{{ nextLabel }}</button>
+        <div class="error" v-if="error !== null">
+            <p v-for="paragraph in error.split('\n')">{{paragraph}}</p>
         </div>
-        <details>
-            <summary>See query #{{history.getCurrentNumber()}}</summary>
-            <codemirror class="output" :style="codemirrorStyle" :extensions="extensions" :modelValue="historyQuery" readonly />
-        </details>
-        <codemirror class="output" :style="codemirrorStyle" :extensions="extensions" :modelValue="response" readonly />
+        <template v-if="history.size() > 0">
+            <h2>Response #{{history.getCurrentNumber()}}</h2>
+            <div class="history">
+                <button :disabled="!history.canGoBack()" @click="previousInHistoryClicked">{{ previousLabel }}</button>
+                <button :disabled="!history.canGoForward()" @click="nextInHistoryClicked">{{ nextLabel }}</button>
+            </div>
+            <details>
+                <summary>See query #{{history.getCurrentNumber()}}</summary>
+                <codemirror class="output" :style="codemirrorStyle" :extensions="extensions"
+                    :modelValue="history.getCurrentEntry()?.query" readonly />
+            </details>
+            <codemirror class="output" :style="codemirrorStyle" :extensions="extensions"
+                :modelValue="history.getCurrentEntry()?.response" readonly />
+        </template>
     </div>
 </template>
 
@@ -210,6 +211,12 @@ form {
 label {
     display: flex;
     flex-direction: column;
+}
+
+.error {
+    border: 0.1rem solid red;
+    padding: 0 1rem;
+    margin: 1rem 0;
 }
 
 .history {
