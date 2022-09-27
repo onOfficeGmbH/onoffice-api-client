@@ -12,7 +12,7 @@ import QueryInput from "./components/QueryInput.vue";
 
 <style>
 main {
-  max-width: 48rem;
+  max-width: 52rem;
   margin: 0 auto;
 }
 
