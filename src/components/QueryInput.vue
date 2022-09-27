@@ -5,8 +5,26 @@ import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { Codemirror } from "vue-codemirror";
 import { json } from "@codemirror/lang-json";
 
-const token = ref("")
-const secret = ref("")
+const savedToken = sessionStorage.getItem("token")
+const savedSecret = sessionStorage.getItem("secret")
+
+const token = ref(savedToken || "")
+const secret = ref(savedSecret || "")
+
+const savedRememberSession = localStorage.getItem("rememberSession") === "true"
+const rememberSession = ref(savedRememberSession || false)
+
+watch([token, secret, rememberSession], ([newToken, newSecret, newRememberSession]) => {
+    if (newRememberSession) {
+        sessionStorage.setItem("token", newToken)
+        sessionStorage.setItem("secret", newSecret)
+        localStorage.setItem("rememberSession", "true")
+    } else {
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("secret")
+        localStorage.removeItem("rememberSession")
+    }
+})
 
 const extensions = [json()];
 
@@ -151,13 +169,19 @@ function exampleChanged() {
         <h2>New query</h2>
         <form @submit.prevent="sendQuery">
             <div class="credentials">
-                <label>
-                    Token
-                    <input type="text" required v-model="token" name="username" autocomplete="username" />
-                </label>
-                <label>
-                    Secret
-                    <input type="password" required v-model="secret" name="password" autocomplete="password" />
+                <div class="inputs">
+                    <label>
+                        Token
+                        <input type="text" required v-model="token" name="username" autocomplete="username" />
+                    </label>
+                    <label>
+                        Secret
+                        <input type="password" required v-model="secret" name="password" autocomplete="password" />
+                    </label>
+                </div>
+                <label class="remember">
+                    <input type="checkbox" v-model="rememberSession" />
+                    Remember credentials across reloads for this session.
                 </label>
             </div>
             <select v-model="currentExample" @change="exampleChanged">
@@ -205,10 +229,21 @@ form {
 
 .credentials {
     display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+}
+
+.credentials .inputs {
+    display: flex;
     flex-direction: row;
     gap: 1rem;
-    margin-bottom: 1rem;
 }
+
+.credentials .remember {
+    flex-direction: row;
+}
+
 
 label {
     display: flex;
