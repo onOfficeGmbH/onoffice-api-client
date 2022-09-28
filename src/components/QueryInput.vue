@@ -11,19 +11,22 @@ const savedSecret = sessionStorage.getItem("secret")
 const token = ref(savedToken || "")
 const secret = ref(savedSecret || "")
 
-const savedRememberSession = localStorage.getItem("rememberSession") === "true"
-const rememberSession = ref(savedRememberSession || false)
-
-watch([token, secret, rememberSession], ([newToken, newSecret, newRememberSession]) => {
-    if (newRememberSession) {
-        sessionStorage.setItem("token", newToken)
-        sessionStorage.setItem("secret", newSecret)
+const rememberSession = import.meta.env.VITE_REMEMBER_SESSION as boolean | undefined || false
+function updateSessionStorage(token: string, secret: secret) {
+    if (rememberSession) {
+        sessionStorage.setItem("token", token)
+        sessionStorage.setItem("secret", secret)
         localStorage.setItem("rememberSession", "true")
     } else {
         sessionStorage.removeItem("token")
         sessionStorage.removeItem("secret")
         localStorage.removeItem("rememberSession")
     }
+}
+
+updateSessionStorage(token.value, secret.value)
+watch([token, secret], ([newToken, newSecret]) => {
+    updateSessionStorage(newToken, newSecret)
 })
 
 const extensions = [json()];
@@ -179,10 +182,6 @@ function exampleChanged() {
                         <input type="password" required v-model="secret" name="password" autocomplete="password" />
                     </label>
                 </div>
-                <label class="remember">
-                    <input type="checkbox" v-model="rememberSession" />
-                    Remember credentials across reloads for this session.
-                </label>
             </div>
             <select v-model="currentExample" @change="exampleChanged">
                 <option v-if="currentExample === null" selected :value="null">Custom</option>
