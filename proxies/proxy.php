@@ -5,7 +5,7 @@ function output_header(string $name, string $value): string {
 }
 
 $rawHeaders = apache_request_headers();
-$headers = array_map('output_header', array_keys($headers), array_values($headers));
+$headers = array_map('output_header', array_keys($rawHeaders), array_values($rawHeaders));
 
 $context = array(
    'http' => array(
