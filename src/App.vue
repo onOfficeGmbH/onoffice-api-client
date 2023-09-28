@@ -12,7 +12,7 @@ const userAvatarUrl = ref(
 <template>
   <NavBar :user-avatar-url="userAvatarUrl" />
   <main>
-    <h1>onOffice API Explorer</h1>
+    <h1><span class="italic">onOffice</span> API Explorer</h1>
     <QueryInput />
   </main>
 </template>
@@ -27,8 +27,20 @@ h1 {
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #036f99;
+  color: transparent;
   letter-spacing: -0.05rem;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    to right,
+    #036f99,
+    #02a8e8,
+    #01c6ff,
+    #01e0ff,
+    #01f2ff
+  );
+
 }
 
 .primary-button {

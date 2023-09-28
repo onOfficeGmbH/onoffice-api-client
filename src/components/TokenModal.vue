@@ -3,7 +3,7 @@ import { ref, watch } from "vue";
 import { updateSessionStorage, getCredentials } from "@/session-storage";
 import Modal from "@/components/Modal.vue";
 
-defineEmits(["close"]);
+defineEmits(["close", "server-change", "version-change"]);
 
 defineProps({
   show: {
@@ -25,7 +25,7 @@ watch([token, secret], ([newToken, newSecret]) => {
 
 <template>
   <Modal :show="show" @close="$emit('close')">
-    <div class="flex flex-col p-2">
+    <div class="flex flex-col py-2 px-4">
       <h2 class="text-lg mb-1">Authentication</h2>
       <p>
         Enter your
@@ -72,7 +72,18 @@ watch([token, secret], ([newToken, newSecret]) => {
             id="server"
             name="server"
             value="https://api.onoffice.de/api/"
+            @change="$emit('server-change', ($event.target as HTMLInputElement).value)"
           />
+        </label>
+        <label
+          >Version
+          <select
+            @change="$emit('version-change', ($event.target as HTMLSelectElement).value)"
+            class="w-fit border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            <option value="stable">stable</option>
+            <option value="latest">latest</option>
+          </select>
         </label>
       </details>
       <button class="primary-button" @click="$emit('close')">Save</button>
