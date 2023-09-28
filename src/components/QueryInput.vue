@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { callApi, ApiResponse } from "@/api-client";
+import { callApi } from "@/api-client";
+import type { ApiResponse } from "@/api-client";
 import { History } from "@/history";
 import { ref, reactive, computed } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { json } from "@codemirror/lang-json";
 import { getCredentials } from "@/session-storage";
-import TokenModal from "./TokenModal.vue";
+import TokenModal from "@/components/TokenModal.vue";
+import Divider from "@/components/Divider.vue";
 
 import createEstate from "@/assets/examples/create-estate.json";
 import readEstates from "@/assets/examples/read-estates.json";
@@ -22,12 +24,12 @@ const extensions = [json()];
 const history = reactive(new History());
 
 const examples = new Map<string, string>();
-examples.set("Read Estates", JSON.stringify(readEstates, undefined, 2));
-examples.set("Create Estate", JSON.stringify(createEstate, undefined, 2));
-examples.set("Edit Estate", JSON.stringify(editEstate, undefined, 2));
-examples.set("Read Addresses", JSON.stringify(readAddresses, undefined, 2));
 examples.set("Create Address", JSON.stringify(createAddress, undefined, 2));
+examples.set("Read Addresses", JSON.stringify(readAddresses, undefined, 2));
 examples.set("Edit Address", JSON.stringify(editAddress, undefined, 2));
+examples.set("Create Estate", JSON.stringify(createEstate, undefined, 2));
+examples.set("Read Estates", JSON.stringify(readEstates, undefined, 2));
+examples.set("Edit Estate", JSON.stringify(editEstate, undefined, 2));
 examples.set(
   "Create Search Criteria",
   JSON.stringify(createSearchCriteria, undefined, 2)
@@ -36,7 +38,7 @@ examples.set("Read User", JSON.stringify(readUser, undefined, 2));
 examples.set("Read User Photo", JSON.stringify(readUserPhoto, undefined, 2));
 examples.set("Custom", JSON.stringify({}, undefined, 2));
 
-const currentExample = ref("Read Estates");
+const currentExample = ref("Create Address");
 const query = ref(examples.get(currentExample.value) as string);
 const sending = ref(false);
 const error = ref<string | null>(null);
@@ -71,7 +73,6 @@ async function sendQuery() {
       return;
     }
     const t = Date.now();
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     response.value = await callApi(savedToken, savedSecret, query.value);
     deltaTime.value = Math.round(Date.now() - t);
 
@@ -136,8 +137,8 @@ function exampleChanged() {
       </form>
 
       <div class="grid-item">
-        <div style="width: 100%; display: flex; justify-content: space-between">
-          <h2>Response #{{ history.getCurrentNumber() }}</h2>
+        <div class="flex w-full justify-between">
+          <h2 class="font-bold">Response #{{ history.getCurrentNumber() }}</h2>
           <div class="history">
             <button :disabled="!history.canGoBack()" @click="history.goBack">
               &laquo;
@@ -175,6 +176,7 @@ function exampleChanged() {
             {{ paragraph }}
           </p>
         </div>
+        <Divider />
         <details>
           <summary>See query #{{ history.getCurrentNumber() }}</summary>
           <codemirror
@@ -231,9 +233,10 @@ form {
   padding: 0.5rem 1rem;
   width: 100%;
   background-color: #fefefe;
-  border: 0.5px solid black;
+  border: 0.5px solid grey;
   border-radius: 0.5rem;
-  box-shadow: 0.05rem 0 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.2rem 1.5rem -0.3rem rgba(0, 0, 0, 0.07),
+    0 1rem 2rem -0.2rem rgba(0, 0, 0, 0.04);
 }
 
 .error {
