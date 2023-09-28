@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import QueryInput from "./components/QueryInput.vue";
-import IconDocumentation from "./components/icons/IconDocumentation.vue";
-import IconCommunity from "./components/icons/IconCommunity.vue";
-import IconTooling from "./components/icons/IconTooling.vue";
-import onOfficeLogo from "./onOffice-logo.png";
+import QueryInput from "@/components/QueryInput.vue";
+import IconDocumentation from "@/components/icons/IconDocumentation.vue";
+import IconCommunity from "@/components/icons/IconCommunity.vue";
+import IconTooling from "@/components/icons/IconTooling.vue";
+import onOfficeLogo from "@/assets/onOffice-logo.png";
 </script>
 
 <template>
   <nav>
-    <img style="height:2.5rem;" :src="onOfficeLogo" alt="onOffice logo" />
+    <img style="height: 2.5rem" :src="onOfficeLogo" alt="onOffice logo" />
     <div>
       <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
         <IconDocumentation />
         Docs
       </a>
       <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
-        <IconCommunity/>
+        <IconCommunity />
         Community
       </a>
       <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
-        <IconTooling/>
+        <IconTooling />
         Tools
       </a>
     </div>
