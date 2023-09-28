@@ -53,7 +53,8 @@ nav {
   display: flex;
   padding: 0 2rem;
   justify-content: space-between;
-  border-bottom: 0.1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.3);
+  background-color: #fefefe;
 }
 
 a {
