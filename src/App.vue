@@ -1,29 +1,16 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import QueryInput from "@/components/QueryInput.vue";
-import IconDocumentation from "@/components/icons/IconDocumentation.vue";
-import IconCommunity from "@/components/icons/IconCommunity.vue";
-import IconTooling from "@/components/icons/IconTooling.vue";
-import onOfficeLogo from "@/assets/onOffice-logo.png";
+import NavBar from "./components/NavBar.vue";
+
+const userAvatarUrl = ref(
+  //"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+  "https://ui-avatars.com/api/?name=User+Name&background=0D5AAA&color=fff"
+);
 </script>
 
 <template>
-  <nav>
-    <img style="height: 2.5rem" :src="onOfficeLogo" alt="onOffice logo" />
-    <div>
-      <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
-        <IconDocumentation />
-        Docs
-      </a>
-      <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
-        <IconCommunity />
-        Community
-      </a>
-      <a href="https://apidoc.onoffice.de/" target="_blank" rel="noopener">
-        <IconTooling />
-        Tools
-      </a>
-    </div>
-  </nav>
+  <NavBar :user-avatar-url="userAvatarUrl" />
   <main>
     <h1>onOffice API Client</h1>
     <QueryInput />
@@ -31,21 +18,6 @@ import onOfficeLogo from "@/assets/onOffice-logo.png";
 </template>
 
 <style>
-nav {
-  display: flex;
-  padding: 0 2rem;
-  justify-content: space-between;
-  border-bottom: 0.1px solid rgba(0, 0, 0, 0.25);
-}
-
-a {
-  margin-left: 0.5rem;
-  text-align: center;
-  align-items: center;
-  padding: 0 0.5rem;
-  text-decoration: none;
-}
-
 main {
   width: 90%;
   margin: 0 auto;
