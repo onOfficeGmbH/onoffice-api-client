@@ -1,0 +1,30 @@
+{ 
+    "actionid":"urn:onoffice-de-ns:smart:2.5:smartml:action:create",
+    "resourceid":"",
+    "identifier":"",
+    "resourcetype":"estate",
+    "parameters":{ 
+        "data":{ 
+            "objektart":"haus",
+            "nutzungsart":"wohnen",
+            "vermarktungsart":"kauf",
+            "objekttyp":"einfamilienhaus",
+            "plz":52068,
+            "ort":"Aachen",
+            "land":"DEU",
+            "regionaler_zusatz":["openGeoDb_Region_122117"],
+            "nebenkosten":100,
+            "heizkosten":80,
+            "mietpreis_pro_qm":12,
+            "wohnflaeche":75,
+            "anzahl_zimmer":3,
+            "anzahl_schlafzimmer":1,
+            "anzahl_badezimmer":1,
+            "breitengrad":"50.7762106",
+            "laengengrad":"6.0857545",
+            "heizungsart":["zentral","fussboden"],
+            "stellplatzart":["freiplatz","carport"],
+            "kaufpreis":200000
+        }
+    }
+}
