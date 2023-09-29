@@ -1,0 +1,9 @@
+{
+    "actionid": "urn:onoffice-de-ns:smart:2.5:smartml:action:read",
+    "resourceid": "21",
+    "identifier": "",
+    "resourcetype": "userphoto",
+    "parameters": {
+        "photosAsLinks": true
+    }
+}

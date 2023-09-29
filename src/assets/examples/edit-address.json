@@ -1,0 +1,15 @@
+{
+    "actionid":"urn:onoffice-de-ns:smart:2.5:smartml:action:modify",
+    "resourceid":32,
+    "resourcetype":"address",
+    "identifier":"",
+    "parameters":{
+        "Vorname":"Peter",
+        "Name":"Lustig",
+        "Strasse":"Hauptstr. 2",
+        "Land":"DEU",
+        "Geburtsdatum":"2017-01-31 12:00:00",
+        "newsletter_aktiv":"0",
+        "HerkunftKontakt":["Suchmaschine","Newsletter"]
+    }
+}

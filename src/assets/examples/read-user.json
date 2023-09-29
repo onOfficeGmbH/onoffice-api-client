@@ -1,0 +1,12 @@
+{
+    "actionid": "urn:onoffice-de-ns:smart:2.5:smartml:action:read",
+    "resourceid": "",
+    "identifier": "",
+    "resourcetype": "user",
+    "parameters": {
+           "data": ["Vorname", "Nachname", "Emailname"],
+           "filter": {"Nr": [{"op": "in", "val": [17, 19, 21]}]},
+           "sortby": {"Nr": "DESC"},
+               "listlimit": 10
+    }
+}

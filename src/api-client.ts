@@ -1,8 +1,16 @@
+export interface ApiResponse {
+  status: {
+    code: number;
+    errorcode: number;
+  };
+  response: object;
+}
+
 export async function callApi(
   token: string,
   secret: string,
-  call: string,
-): Promise<object | null> {
+  call: string
+): Promise<ApiResponse | null> {
   let query;
   try {
     query = JSON.parse(call);
@@ -12,13 +20,19 @@ export async function callApi(
   }
 
   const timestamp = Math.round(new Date().getTime() / 1000);
-  const hmac = await generateHmac(token, secret, timestamp, query.resourcetype, query.actionid);
+  const hmac = await generateHmac(
+    token,
+    secret,
+    timestamp,
+    query.resourcetype,
+    query.actionid
+  );
 
   const parameters = JSON.stringify(query.parameters);
 
-  const request =
-    `{"token":"${token}","request":{"actions":[{"actionid":"${query.actionid}","resourceid":"${query.resourceid}","resourcetype":"${query.resourcetype}","identifier":"${query.identifier}","timestamp":${timestamp},"hmac_version":"2","hmac":"${hmac}","parameters":${parameters}}]}}`;
+  const request = `{"token":"${token}","request":{"actions":[{"actionid":"${query.actionid}","resourceid":"${query.resourceid}","resourcetype":"${query.resourcetype}","identifier":"${query.identifier}","timestamp":${timestamp},"hmac_version":"2","hmac":"${hmac}","parameters":${parameters}}]}}`;
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-extra-non-null-assertion
   return fetch(import.meta.env.VITE_API_SERVER_URL!! as string, {
     method: "POST",
     headers: {
@@ -30,11 +44,17 @@ export async function callApi(
       console.error("Server responded with an error:", response.statusText);
       return null;
     }
-    return response.json();
+    return response.json() as Promise<ApiResponse>;
   });
 }
 
-async function generateHmac(token: string, secret: string, timestamp: number, resourceType: string, actionId: string): Promise<string> {
+async function generateHmac(
+  token: string,
+  secret: string,
+  timestamp: number,
+  resourceType: string,
+  actionId: string
+): Promise<string> {
   const hmacData = timestamp + token + resourceType + actionId;
 
   const encoder = new TextEncoder();
@@ -46,12 +66,12 @@ async function generateHmac(token: string, secret: string, timestamp: number, re
       hash: "SHA-256",
     },
     false,
-    ["sign"],
+    ["sign"]
   );
   const signed = await window.crypto.subtle.sign(
     "HMAC",
     key,
-    encoder.encode(hmacData),
+    encoder.encode(hmacData)
   );
   return btoa(String.fromCharCode(...new Uint8Array(signed)));
 }

@@ -1,0 +1,21 @@
+{
+    "actionid": "urn:onoffice-de-ns:smart:2.5:smartml:action:create",
+    "resourceid": "",
+    "identifier": "",
+    "resourcetype": "searchcriteria",
+        "parameters": {
+            "addressid":"153",
+            "data": {
+                "advisor":21,
+                "objektart":"haus",
+                "vermarktungsart":"kauf",
+                "range_plz":"52068",
+                "range_ort":"Aachen",
+                "range_strasse":"Charlottenburger Allee",
+                "range_hausnummer":"5",
+                "range":"100",
+                "kaufpreis__von":"50000",
+                "kaufpreis__bis":"100000"
+            }
+        }
+}
