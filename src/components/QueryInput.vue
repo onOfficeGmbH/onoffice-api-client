@@ -42,13 +42,6 @@ const currentExample = ref("Create Address");
 const query = ref(examples.get(currentExample.value) as string);
 const sending = ref(false);
 const error = ref<string | null>(null);
-const submitMsg = computed(() => {
-  if (!sending.value) {
-    return `Send #${history.size() + 1}`;
-  } else {
-    return `Sending #${history.size() + 1}…`;
-  }
-});
 
 const response = ref<ApiResponse | null>(null);
 const deltaTime = ref(0);
@@ -73,12 +66,23 @@ async function sendQuery() {
       return;
     }
     const t = Date.now();
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    // response.value = {
+    //   status: {
+    //     code: 200,
+    //     errorcode: 0,
+    //   },
+    //   response: {
+    //     results: [{}],
+    //   },
+    // };
     response.value = await callApi(savedToken, savedSecret, query.value);
     deltaTime.value = Math.round(Date.now() - t);
 
     history.addNewEntry({
+      timeMs: deltaTime.value,
       query: query.value,
-      response: JSON.stringify(response.value, undefined, 2),
+      response: JSON.stringify(response.value?.response, undefined, 2),
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -121,19 +125,22 @@ function exampleChanged() {
             {{ key }}
           </option>
         </select>
+
         <codemirror
           :style="codemirrorStyle"
           :extensions="extensions"
           :modelValue="query"
           @update:modelValue="queryModified"
         />
+
         <input type="hidden" :value="query" name="query" />
-        <input
-          class="primary-button"
-          type="submit"
-          :value="submitMsg"
-          :disabled="sending"
-        />
+        <button class="primary-button" type="submit" :disabled="sending">
+          Send
+          <pre
+            v-if="sending"
+            class="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          ></pre>
+        </button>
       </form>
 
       <div class="grid-item">
@@ -152,31 +159,47 @@ function exampleChanged() {
             </button>
           </div>
         </div>
+
         <div class="flex gap-4">
-          <span>Response time: {{ deltaTime }} ms</span>
-          <template v-if="response?.status">
-            <span class="flex items-center gap-1">
-              <pre
-                v-if="response?.status.code < 400"
-                class="h-2 w-2 bg-green-500 rounded-full"
-              ></pre>
-              <pre v-else class="h-2 w-2 bg-red-500 rounded-full"></pre>
+          <span
+            >Response time:
+            {{ history.getCurrentEntry()?.timeMs || 0 }} ms</span
+          >
+          <div v-if="response?.status">
+            <span class="relative flex items-center gap-1">
+              <template v-if="response?.status.code < 400">
+                <pre
+                  class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"
+                ></pre>
+                <pre class="h-2 w-2 bg-green-500 rounded-full"></pre>
+              </template>
+              <template v-else>
+                <pre
+                  class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"
+                ></pre>
+                <pre class="h-2 w-2 bg-red-500 rounded-full"></pre>
+              </template>
               Http: {{ response?.status.code }}
             </span>
             <span v-if="response?.status.errorcode > 0"
               >ErrorCode: {{ response?.status.errorcode }}</span
             >
-          </template>
+          </div>
         </div>
-        <div class="error" v-if="error">
-          <p
-            v-for="paragraph in error?.split('\n')"
-            :key="paragraph.slice(0, 3)"
-          >
-            {{ paragraph }}
-          </p>
-        </div>
+
+        <Transition name="slide-fade" appear>
+          <div class="error" v-if="error">
+            <p
+              v-for="paragraph in error?.split('\n')"
+              :key="paragraph.slice(0, 3)"
+            >
+              {{ paragraph }}
+            </p>
+          </div>
+        </Transition>
+
         <Divider />
+
         <details>
           <summary>See query #{{ history.getCurrentNumber() }}</summary>
           <codemirror
@@ -187,6 +210,7 @@ function exampleChanged() {
             readonly
           />
         </details>
+
         <codemirror
           v-if="!sending"
           :style="codemirrorStyle"
@@ -195,6 +219,7 @@ function exampleChanged() {
           disabled
           readonly
         />
+
         <div v-else class="animate-pulse flex">
           <div class="flex-1 py-1">
             <div class="h-2 bg-[#036f99] rounded"></div>
@@ -259,15 +284,29 @@ details {
   margin: 0.5rem 0;
 }
 
-button {
+.history > button {
   border: 0.5px solid black;
   border-radius: 0.5rem;
   padding: 0 0.5rem;
   background-color: rgb(225, 225, 225);
 }
 
-button:disabled {
+.history > button:disabled {
   color: rgb(150, 150, 150);
   background-color: rgb(200, 200, 200);
+}
+
+.slide-fade-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
 }
 </style>
