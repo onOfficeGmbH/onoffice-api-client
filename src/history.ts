@@ -1,4 +1,5 @@
 export type HistoryEntry = {
+  timeMs: number;
   query: string;
   response: string;
 };

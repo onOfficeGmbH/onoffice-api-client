@@ -1,0 +1,39 @@
+{
+    "actionid": "urn:onoffice-de-ns:smart:2.5:smartml:action:read",
+    "resourceid": "",
+    "identifier": "",
+    "resourcetype": "address",
+    "parameters": {
+        "data": [
+            "Briefanrede",
+            "Vorname",
+            "Name",
+            "Land",
+            "Ort",
+            "Plz",
+            "Strasse"
+        ],
+        "filter": {
+            "Vorname": [
+                {
+                    "op": "IN",
+                    "val": [
+                        "Max",
+                        "Moritz"
+                    ]
+                }
+            ],
+            "letzter_Kontakt": [
+                {
+                    "op": "BETWEEN",
+                    "val": [
+                        "2020-01-01 00:00:00",
+                        "2021-04-01 15:00:00"
+                    ]
+                }
+            ]
+        },
+        "sortby": "Strasse",
+        "sortorder": "DESC"
+    }
+}

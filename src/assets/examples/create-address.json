@@ -1,0 +1,19 @@
+{
+    "actionid":"urn:onoffice-de-ns:smart:2.5:smartml:action:create",
+    "resourcetype":"address",
+    "resourceid":"",
+    "identifier":"",
+    "parameters": {
+        "Anrede":"Herr",
+        "Vorname":"Max",
+        "Name":"Mustermann",
+        "email":"m.mustermann@onoffice.de",
+        "phone":"0241 12345",
+        "phone_business":"0241 56789",
+        "default_phone":"0241 12345",
+        "Plz":"52074",
+        "Ort":"Aachen",
+        "Benutzer":"theotest",
+        "HerkunftKontakt":["Suchmaschine","Newsletter"]
+    }
+}

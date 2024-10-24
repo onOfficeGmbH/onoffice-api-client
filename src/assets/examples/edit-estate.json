@@ -1,0 +1,19 @@
+{
+    "actionid":"urn:onoffice-de-ns:smart:2.5:smartml:action:modify",
+    "resourceid":"116",
+    "identifier":"",
+    "resourcetype":"estate",
+    "parameters":{
+        "data":{
+            "objektart":"haus",
+            "nutzungsart":"wohnen",
+            "vermarktungsart":"kauf",
+            "objekttyp":"einfamilienhaus",
+            "plz":52068,
+            "ort":"Aachen",
+            "land":"DEU",
+            "heizungsart":["gas","fussboden"],
+            "kaufpreis":200000
+        }
+    }
+}
