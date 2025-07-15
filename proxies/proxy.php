@@ -1,16 +1,19 @@
 <?php
-
 function output_header(string $name, string $value): string {
     return $name . ": " . $value;
 }
 
-$rawHeaders = apache_request_headers();
-$headers = array_map('output_header', array_keys($rawHeaders), array_values($rawHeaders));
+$headers = [
+    "Host: api.onoffice.de",
+    "Content-Type: application/json",
+    "Accept: application/json",
+    "User-Agent: PHP-Proxy/1.0",
+];
 
 $context = array(
    'http' => array(
        'method' => $_SERVER['REQUEST_METHOD'],
-       'header' => $headers,
+       'header'  => implode("\r\n", $headers),
        'content' => file_get_contents('php://input'),
        ),
    );
